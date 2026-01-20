@@ -168,7 +168,7 @@
         {{ os.historico.count }} registros
       </span>
     </div>
-    <div class="mt-4 space-y-3 text-sm">
+    <div class="mt-4 max-h-80 space-y-3 overflow-y-auto pr-2 text-sm">
       {% if os.historico.all %}
         {% for h in os.historico.all %}
         <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3">

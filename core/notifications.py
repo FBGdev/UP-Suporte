@@ -1,7 +1,8 @@
+import json
 import logging
+import urllib.request
 
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives, get_connection
 from django.urls import reverse
 
 logger = logging.getLogger(__name__)
@@ -39,20 +40,31 @@ def notify_os_assigned(ordem):
 
     user = ordem.funcionario.usuario
     if user.email:
-        try:
-            timeout = getattr(settings, "EMAIL_TIMEOUT", 5)
-            connection = get_connection(timeout=timeout)
-            message = EmailMultiAlternatives(
-                subject,
-                text_body,
-                settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-                connection=connection,
-            )
-            message.attach_alternative(html_body, "text/html")
-            message.send(fail_silently=False)
-        except Exception:  # noqa: BLE001 - avoid blocking the OS assignment
-            logger.exception("Falha ao enviar email de OS atribuida para %s", user.email)
+        if not settings.RESEND_API_KEY or not settings.RESEND_FROM_EMAIL:
+            logger.info("Resend nao configurado, pulando envio para %s", user.email)
+        else:
+            try:
+                payload = {
+                    "from": settings.RESEND_FROM_EMAIL,
+                    "to": [user.email],
+                    "subject": subject,
+                    "text": text_body,
+                    "html": html_body,
+                }
+                req = urllib.request.Request(
+                    "https://api.resend.com/emails",
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={
+                        "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+                        "Content-Type": "application/json",
+                    },
+                    method="POST",
+                )
+                with urllib.request.urlopen(req, timeout=settings.EMAIL_TIMEOUT) as resp:
+                    if resp.status >= 400:
+                        logger.error("Falha ao enviar email Resend: %s", resp.read().decode())
+            except Exception:  # noqa: BLE001 - avoid blocking the OS assignment
+                logger.exception("Falha ao enviar email Resend para %s", user.email)
     else:
         logger.info("Email nao cadastrado para usuario %s", user.username)
 
