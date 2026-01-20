@@ -64,12 +64,12 @@
       <div class="grid gap-3 sm:grid-cols-2">
         <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3">
           <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Criada em</p>
-          <p class="mt-2 text-slate-700">{{ os.data_criacao }}</p>
+          <p class="mt-2 text-slate-700">{{ os.data_criacao|date:"d/m/Y H:i" }}</p>
         </div>
         {% if os.data_conclusao %}
         <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3">
           <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Concluida em</p>
-          <p class="mt-2 text-slate-700">{{ os.data_conclusao }}</p>
+          <p class="mt-2 text-slate-700">{{ os.data_conclusao|date:"d/m/Y H:i" }}</p>
         </div>
         {% endif %}
       </div>
@@ -110,7 +110,7 @@
         <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
           <div class="flex items-center justify-between text-xs text-slate-500">
             <span class="font-semibold uppercase tracking-[0.25em] text-slate-500">{{ r.tipo_servico }}</span>
-            <span>{{ r.data_execucao }}</span>
+            <span>{{ r.data_execucao|date:"d/m/Y H:i" }}</span>
           </div>
           <p class="mt-2 font-semibold text-slate-800">
             {% if r.funcionario %}

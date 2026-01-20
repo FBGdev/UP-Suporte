@@ -7,21 +7,14 @@ logger = logging.getLogger(__name__)
 
 
 def _build_os_message(ordem):
-    aparelho = ordem.aparelho
     tecnico = ordem.funcionario.usuario.get_full_name() or ordem.funcionario.usuario.username
-    agendamento = "Nao agendado"
-    if ordem.data_agendada and ordem.hora_agendada:
-        agendamento = f"{ordem.data_agendada} as {ordem.hora_agendada}"
 
-    subject = f"OS #{ordem.id} atribuida a voce"
+    subject = "Nova OS atribuida"
     body = (
         f"Ola {tecnico},\n\n"
-        f"Voce foi designado para a OS #{ordem.id}.\n"
-        f"Aparelho: {aparelho.nome} ({aparelho.marca} {aparelho.modelo})\n"
-        f"Cliente: {aparelho.cliente}\n"
-        f"Agendamento: {agendamento}\n"
-        f"Prioridade: {ordem.prioridade}\n\n"
-        "Acesse o sistema para ver os detalhes."
+        "Uma nova ordem de servico foi atribuida ao seu usuario.\n"
+        "Entre no sistema para visualizar os detalhes.\n\n"
+        "UpSuporte"
     )
     return subject, body
 

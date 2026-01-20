@@ -61,6 +61,58 @@
       </span>
     </div>
 
+    <form method="get" class="mt-6 grid gap-3 rounded-2xl border border-slate-200 bg-white/70 p-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="sm:col-span-2 lg:col-span-2">
+        <label class="form-label">Busca</label>
+        <input
+          type="text"
+          name="q"
+          value="{{ filters.q }}"
+          class="form-control"
+          placeholder="OS, aparelho, cliente ou problema"
+        >
+      </div>
+      <div>
+        <label class="form-label">Status</label>
+        <select name="status" class="form-select">
+          <option value="">Todos</option>
+          {% for value, label in status_choices %}
+          <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Prioridade</label>
+        <select name="prioridade" class="form-select">
+          <option value="">Todas</option>
+          {% for value, label in prioridade_choices %}
+          <option value="{{ value }}" {% if filters.prioridade == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% if is_gestor %}
+      <div class="sm:col-span-2 lg:col-span-2">
+        <label class="form-label">Tecnico</label>
+        <select name="tecnico" class="form-select">
+          <option value="">Todos</option>
+          {% for t in tecnicos %}
+          <option value="{{ t.id }}" {% if filters.tecnico == t.id|stringformat:"s" %}selected{% endif %}>
+            {{ t }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <div class="flex items-end gap-2 sm:col-span-2 lg:col-span-2">
+        <button type="submit" class="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5">
+          Filtrar
+        </button>
+        <a href="{% url 'home' %}" class="text-sm font-semibold text-slate-600 hover:text-slate-900">
+          Limpar
+        </a>
+      </div>
+    </form>
+
     <div class="mt-6 space-y-4">
       {% for os in ordens %}
       <div class="rounded-2xl border border-slate-200 bg-white px-4 py-4">

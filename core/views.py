@@ -1,6 +1,7 @@
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -53,11 +54,38 @@ def home(request):
         ordens = (
             OrdemServico.objects.filter(funcionario=funcionario)
             .select_related("aparelho", "funcionario")
-            .order_by("-data_criacao")
         )
     else:
         aparelhos = Aparelho.objects.all()
         ordens = OrdemServico.objects.select_related("aparelho", "funcionario")
+
+    q = request.GET.get("q", "").strip()
+    status = request.GET.get("status", "").strip()
+    prioridade = request.GET.get("prioridade", "").strip()
+    tecnico_id = request.GET.get("tecnico", "").strip()
+
+    if q:
+        query = (
+            Q(aparelho__nome__icontains=q)
+            | Q(aparelho__marca__icontains=q)
+            | Q(aparelho__modelo__icontains=q)
+            | Q(aparelho__cliente__icontains=q)
+            | Q(problema_relatado__icontains=q)
+        )
+        if q.isdigit():
+            query |= Q(id=int(q))
+        ordens = ordens.filter(query)
+
+    if status:
+        ordens = ordens.filter(status=status)
+
+    if prioridade:
+        ordens = ordens.filter(prioridade=prioridade)
+
+    if is_gestor and tecnico_id:
+        ordens = ordens.filter(funcionario_id=tecnico_id)
+
+    ordens = ordens.order_by("-data_criacao")
 
     return render(
         request,
@@ -68,6 +96,15 @@ def home(request):
             "funcionario": funcionario,
             "is_gestor": is_gestor,
             "is_tecnico": is_tecnico,
+            "status_choices": OrdemServico.STATUS_CHOICES,
+            "prioridade_choices": OrdemServico.PRIORIDADE_CHOICES,
+            "tecnicos": Funcionario.objects.all() if is_gestor else Funcionario.objects.none(),
+            "filters": {
+                "q": q,
+                "status": status,
+                "prioridade": prioridade,
+                "tecnico": tecnico_id,
+            },
         },
     )
 
