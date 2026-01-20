@@ -1,7 +1,7 @@
 import logging
 
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, get_connection
 from django.urls import reverse
 
 logger = logging.getLogger(__name__)
@@ -40,11 +40,14 @@ def notify_os_assigned(ordem):
     user = ordem.funcionario.usuario
     if user.email:
         try:
+            timeout = getattr(settings, "EMAIL_TIMEOUT", 5)
+            connection = get_connection(timeout=timeout)
             message = EmailMultiAlternatives(
                 subject,
                 text_body,
                 settings.DEFAULT_FROM_EMAIL,
                 [user.email],
+                connection=connection,
             )
             message.attach_alternative(html_body, "text/html")
             message.send(fail_silently=False)

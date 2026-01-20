@@ -46,4 +46,27 @@
     </div>
   </form>
 </div>
+
+<div id="loading-overlay" class="fixed inset-0 z-[200] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm">
+  <div class="rounded-3xl bg-white px-6 py-5 shadow-soft">
+    <div class="flex items-center gap-3">
+      <span class="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-900"></span>
+      <p class="text-sm font-semibold text-slate-700">Enviando notificacao...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const form = document.querySelector("form");
+  const overlay = document.getElementById("loading-overlay");
+
+  form.addEventListener("submit", () => {
+    overlay.classList.remove("hidden");
+    overlay.classList.add("flex");
+    form.querySelectorAll("button, a, input, select").forEach((el) => {
+      el.setAttribute("disabled", "disabled");
+      el.classList.add("pointer-events-none", "opacity-70");
+    });
+  });
+</script>
 {% endblock %}
