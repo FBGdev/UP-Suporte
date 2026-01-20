@@ -79,6 +79,9 @@ class RegistroManutencao(models.Model):
     tipo_servico = models.CharField(max_length=20, choices=TIPO_SERVICO)
     descricao = models.TextField()
     peca_trocada = models.CharField(max_length=150, blank=True, null=True)
+    foto_1 = models.ImageField(upload_to="manutencoes/", blank=True, null=True)
+    foto_2 = models.ImageField(upload_to="manutencoes/", blank=True, null=True)
+    foto_3 = models.ImageField(upload_to="manutencoes/", blank=True, null=True)
 
     data_execucao = models.DateTimeField(auto_now_add=True)
 

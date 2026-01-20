@@ -203,7 +203,7 @@ def registrar_manutencao_os(request, os_id):
     funcionario = ordem.funcionario
 
     if request.method == "POST":
-        form = RegistroManutencaoForm(request.POST)
+        form = RegistroManutencaoForm(request.POST, request.FILES)
         if form.is_valid():
             manut = form.save(commit=False)
             manut.ordem_servico = ordem

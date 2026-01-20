@@ -31,11 +31,14 @@ class OrdemServicoForm(forms.ModelForm):
 class RegistroManutencaoForm(forms.ModelForm):
     class Meta:
         model = RegistroManutencao
-        fields = ["tipo_servico", "descricao", "peca_trocada"]
+        fields = ["tipo_servico", "descricao", "peca_trocada", "foto_1", "foto_2", "foto_3"]
         widgets = {
             "tipo_servico": forms.Select(attrs={"class": "form-select"}),
             "descricao": forms.Textarea(attrs={"class": "form-control", "rows": 4}),
             "peca_trocada": forms.TextInput(attrs={"class": "form-control"}),
+            "foto_1": forms.ClearableFileInput(attrs={"class": "form-control"}),
+            "foto_2": forms.ClearableFileInput(attrs={"class": "form-control"}),
+            "foto_3": forms.ClearableFileInput(attrs={"class": "form-control"}),
         }
 
 

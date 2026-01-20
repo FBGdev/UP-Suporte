@@ -76,6 +76,24 @@
       form p {
         margin-bottom: 1.25rem;
       }
+
+      input[type="file"].form-control {
+        padding: 0.6rem 0.9rem;
+        color: rgba(71, 85, 105, 1);
+        background-color: rgba(248, 250, 252, 1);
+      }
+
+      input[type="file"].form-control::file-selector-button {
+        border: 1px solid rgba(226, 232, 240, 1);
+        background: white;
+        color: rgba(51, 65, 85, 1);
+        padding: 0.4rem 0.9rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-right: 0.75rem;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body class="min-h-screen bg-[#f6f3ee] text-slate-900 antialiased">

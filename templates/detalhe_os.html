@@ -123,6 +123,23 @@
           {% if r.peca_trocada %}
           <p class="mt-2 text-xs text-slate-500">Peca trocada: {{ r.peca_trocada }}</p>
           {% endif %}
+          <div class="mt-3 grid gap-3 sm:grid-cols-2">
+            {% if r.foto_1 %}
+            <div class="overflow-hidden rounded-2xl border border-slate-200">
+              <img src="{{ r.foto_1.url }}" alt="Foto da manutencao" class="h-48 w-full object-cover">
+            </div>
+            {% endif %}
+            {% if r.foto_2 %}
+            <div class="overflow-hidden rounded-2xl border border-slate-200">
+              <img src="{{ r.foto_2.url }}" alt="Foto da manutencao" class="h-48 w-full object-cover">
+            </div>
+            {% endif %}
+            {% if r.foto_3 %}
+            <div class="overflow-hidden rounded-2xl border border-slate-200">
+              <img src="{{ r.foto_3.url }}" alt="Foto da manutencao" class="h-48 w-full object-cover">
+            </div>
+            {% endif %}
+          </div>
         </div>
         {% endfor %}
       {% else %}
