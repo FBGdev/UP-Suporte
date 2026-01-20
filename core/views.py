@@ -197,6 +197,27 @@ def detalhe_os(request, id):
         {"os": os_obj, "is_gestor": is_gestor, "funcionario": funcionario},
     )
 
+
+@login_required
+def decidir_os(request, id):
+    os_obj = get_object_or_404(OrdemServico, id=id)
+    funcionario = _get_funcionario(request.user)
+    is_tecnico = request.user.groups.filter(name="Tecnico").exists()
+
+    if not is_tecnico or not funcionario or os_obj.funcionario_id != funcionario.id:
+        return redirect("home")
+
+    if request.method == "POST":
+        acao = request.POST.get("acao")
+        if acao == "aceitar":
+            os_obj.status = "ACEITA"
+        elif acao == "rejeitar":
+            os_obj.status = "REJEITADA"
+        os_obj.save()
+        return redirect("home")
+
+    return redirect("home")
+
 @login_required
 def registrar_manutencao_os(request, os_id):
     ordem = get_object_or_404(OrdemServico, id=os_id)

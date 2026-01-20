@@ -158,6 +158,7 @@ ENABLE_WHATSAPP_NOTIFICATIONS = os.getenv(
     'ENABLE_WHATSAPP_NOTIFICATIONS',
     'False'
 ).lower() in ('1', 'true', 'yes')
+SITE_URL = os.getenv('SITE_URL', 'http://localhost:8000')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

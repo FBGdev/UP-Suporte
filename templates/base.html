@@ -125,11 +125,17 @@
       </header>
       {% endblock %}
 
-      <main class="mx-auto max-w-6xl px-6 py-10 animate-fade-up">
-        {% block content %}
-        {% endblock %}
+      <main class="mx-auto max-w-6xl px-6 py-10">
+        <div class="animate-fade-up">
+          {% block content %}
+          {% endblock %}
+        </div>
       </main>
+
     </div>
+
+    {% block modals %}
+    {% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
   </body>

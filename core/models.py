@@ -37,6 +37,8 @@ class OrdemServico(models.Model):
         ("ABERTO", "Aberto"),
         ("AGENDADO", "Agendado"),
         ("EM_ANDAMENTO", "Em andamento"),
+        ("ACEITA", "Aceita"),
+        ("REJEITADA", "Rejeitada"),
         ("CONCLUIDO", "Concluído"),
         ("CANCELADO", "Cancelado"),
     ]

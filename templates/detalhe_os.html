@@ -94,6 +94,11 @@
           Registrar manutencao
         </a>
       {% endif %}
+      {% if os.funcionario and funcionario and os.funcionario.id == funcionario.id and os.status == "AGENDADO" %}
+        <a href="{% url 'aprovar_os' os.id %}" class="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700">
+          Aceitar ou rejeitar
+        </a>
+      {% endif %}
     </div>
   </div>
 

@@ -28,6 +28,7 @@ urlpatterns = [
     # 🧾 Ordem de Serviço (OS)
     path('os/nova/<int:aparelho_id>/', views.nova_os, name='nova_os'),
     path('os/<int:id>/', views.detalhe_os, name='detalhe_os'),
+    path('os/<int:id>/decidir/', views.decidir_os, name='decidir_os'),
 
     # 👷 Gestão da OS (gestor)
     path(
