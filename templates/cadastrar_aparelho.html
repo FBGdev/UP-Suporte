@@ -1,28 +1,26 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block title %}Cadastrar Aparelho{% endblock %}
 
 {% block content %}
-
-<div class="card shadow-sm">
-  <div class="card-body">
-    <h4 class="mb-3">
-      {% if editando %}
-        ✏️ Editar Aparelho
-      {% else %}
-        ➕ Novo Aparelho
-      {% endif %}
-    </h4>
-
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-
-      <button class="btn btn-success w-100">
-        💾 {% if editando %}Atualizar{% else %}Salvar{% endif %}
-      </button>
-    </form>
+<div class="mx-auto max-w-2xl rounded-3xl border border-slate-200/70 bg-white/80 p-8 shadow-soft">
+  <div class="mb-6">
+    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500">
+      {% if editando %}Edicao{% else %}Cadastro{% endif %}
+    </p>
+    <h2 class="mt-2 font-display text-2xl">
+      {% if editando %}Editar aparelho{% else %}Novo aparelho{% endif %}
+    </h2>
+    <p class="text-sm text-slate-500">Mantenha o inventario atualizado com dados claros e consistentes.</p>
   </div>
-</div>
 
+  <form method="post" class="space-y-5">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button class="w-full rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5">
+      {% if editando %}Atualizar{% else %}Salvar{% endif %}
+    </button>
+  </form>
+</div>
 {% endblock %}

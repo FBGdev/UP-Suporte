@@ -3,24 +3,21 @@
 {% block title %}Cadastro de Usuário{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-lg-6">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h4 class="card-title mb-3">👤 Cadastro de Usuário</h4>
-
-        <form method="post">
-          {% csrf_token %}
-          {{ form.non_field_errors }}
-
-          {{ form.as_p }}
-
-          <button class="btn btn-primary w-100" type="submit">
-            💾 Criar conta
-          </button>
-        </form>
-      </div>
-    </div>
+<div class="mx-auto max-w-2xl rounded-3xl border border-slate-200/70 bg-white/80 p-8 shadow-soft">
+  <div class="mb-6">
+    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500">Acesso</p>
+    <h2 class="mt-2 font-display text-2xl">Cadastro de usuario</h2>
+    <p class="text-sm text-slate-500">Crie um perfil tecnico e ja associe o cargo e telefone.</p>
   </div>
+
+  <form method="post" class="space-y-5">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {{ form.as_p }}
+
+    <button class="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5">
+      Criar conta
+    </button>
+  </form>
 </div>
 {% endblock %}

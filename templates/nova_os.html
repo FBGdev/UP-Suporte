@@ -1,14 +1,27 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
 
-<h2>➕ Nova Ordem de Serviço</h2>
+{% block title %}Nova OS{% endblock %}
 
-<p>Aparelho: <strong>{{ aparelho.nome }}</strong></p>
+{% block content %}
+<div class="mx-auto max-w-2xl rounded-3xl border border-slate-200/70 bg-white/80 p-8 shadow-soft">
+  <div class="mb-6">
+    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-500">Nova OS</p>
+    <h2 class="mt-2 font-display text-2xl">Abrir ordem de servico</h2>
+    <p class="text-sm text-slate-500">Aparelho: <span class="font-semibold text-slate-900">{{ aparelho.nome }}</span></p>
+  </div>
 
-<form method="post">
-  {% csrf_token %} {{ form.as_p }}
-  <button type="submit">Salvar OS</button>
-</form>
+  <form method="post" class="space-y-5">
+    {% csrf_token %}
+    {{ form.as_p }}
 
-<a href="{% url 'home' %}">⬅ Voltar</a>
-
+    <div class="flex flex-wrap items-center gap-3">
+      <button type="submit" class="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5">
+        Salvar OS
+      </button>
+      <a href="{% url 'home' %}" class="text-sm font-semibold text-slate-600 hover:text-slate-900">
+        Voltar
+      </a>
+    </div>
+  </form>
+</div>
 {% endblock %}

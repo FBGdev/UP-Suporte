@@ -1,57 +1,59 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
 
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Login - Suporte Técnico</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+{% block header %}{% endblock %}
 
-<div class="container d-flex justify-content-center align-items-center vh-100">
-<div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; border-radius: 12px;">
-    <div class="text-center mb-3">
-        <h4 class="fw-bold">🔧 Suporte Técnico</h4>
-        <p class="text-muted">Acesso ao sistema interno</p>
+{% block content %}
+<div class="grid min-h-[80vh] place-items-center">
+  <div class="w-full max-w-md rounded-3xl border border-slate-200/70 bg-white/80 p-8 shadow-soft backdrop-blur">
+    <div class="mb-8 text-center">
+      <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-soft">
+        🔧
+      </div>
+      <h1 class="font-display text-2xl">Bem-vindo ao UpSuporte</h1>
+      <p class="text-sm text-slate-500">Acesso seguro ao seu painel de atendimento.</p>
     </div>
 
+    <form method="POST" class="space-y-5">
+      {% csrf_token %}
 
-<form method="POST">
-    {% csrf_token %}
+      <div>
+        <label class="text-sm font-medium text-slate-700">Usuário</label>
+        <input
+          type="text"
+          name="username"
+          class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200"
+          placeholder="Digite seu usuário"
+          required
+        >
+      </div>
 
-    <div class="mb-3">
-        <label class="form-label">Usuário</label>
-        <input type="text" name="username" class="form-control" placeholder="Digite seu usuário" required>
-    </div>
+      <div>
+        <label class="text-sm font-medium text-slate-700">Senha</label>
+        <input
+          type="password"
+          name="password"
+          class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200"
+          placeholder="Digite sua senha"
+          required
+        >
+      </div>
 
-    <div class="mb-3">
-        <label class="form-label">Senha</label>
-        <input type="password" name="password" class="form-control" placeholder="Digite sua senha" required>
-    </div>
-
-    {% if form.errors %}
-    <div class="alert alert-danger py-2">
+      {% if form.errors %}
+      <div class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
         {% for error in form.non_field_errors %}
-            <small>{{ error }}</small><br>
+          <p>{{ error }}</p>
         {% endfor %}
         {% if not form.non_field_errors %}
-            <small>Usuário ou senha incorretos.</small>
+          <p>Usuário ou senha incorretos.</p>
         {% endif %}
-    </div>
-    {% endif %}
+      </div>
+      {% endif %}
 
-    <button class="btn btn-dark w-100 fw-semibold">Entrar</button>
-</form>
-
-<div class="text-center mt-3">
-    <small class="text-muted">Sistema de Suporte Técnico</small>
+      <button class="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:shadow-soft">
+        Entrar
+      </button>
+    </form>
+  </div>
 </div>
-
-
-</div>
-</div>
-</div>
-
-</body>
-</html>
+{% endblock %}

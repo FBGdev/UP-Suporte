@@ -3,31 +3,37 @@
 {% block title %}Minhas OS{% endblock %}
 
 {% block content %}
-<h4 class="mb-3">📋 Minhas Ordens de Serviço</h4>
+<div class="flex flex-col gap-2">
+  <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Painel tecnico</p>
+  <h2 class="font-display text-2xl">Minhas ordens de servico</h2>
+  <p class="text-sm text-slate-500">Tudo que esta atribuido a voce com o aparelho e status.</p>
+</div>
 
 {% if not funcionario %}
-  <div class="alert alert-warning">
-    Seu usuário não está associado a um funcionário.
+  <div class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+    Seu usuario nao esta associado a um funcionario.
   </div>
 {% endif %}
 
-<div class="card shadow-sm">
-  <div class="card-body">
-    <ul class="list-group list-group-flush">
-      {% for os in ordens %}
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        <div>
-          <strong>OS #{{ os.id }}</strong><br>
-          <small class="text-muted">{{ os.aparelho.nome }} — {{ os.status }}</small>
-        </div>
-        <a class="btn btn-sm btn-outline-secondary" href="{% url 'detalhe_os' os.id %}">
-          👁️ Detalhes
-        </a>
-      </li>
-      {% empty %}
-      <li class="list-group-item text-muted">Nenhuma OS atribuída.</li>
-      {% endfor %}
-    </ul>
+<div class="mt-6 rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-soft">
+  <div class="space-y-4">
+    {% for os in ordens %}
+    <div class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white px-4 py-4">
+      <div>
+        <p class="text-sm font-semibold text-slate-900">OS #{{ os.id }}</p>
+        <p class="text-xs text-slate-500">
+          {{ os.aparelho.nome }} · {{ os.aparelho.marca }} {{ os.aparelho.modelo }} · {{ os.status }}
+        </p>
+      </div>
+      <a class="rounded-full border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600" href="{% url 'detalhe_os' os.id %}">
+        Ver detalhes
+      </a>
+    </div>
+    {% empty %}
+    <div class="rounded-2xl border border-dashed border-slate-200 bg-white/60 px-4 py-6 text-sm text-slate-500">
+      Nenhuma OS atribuida.
+    </div>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}
