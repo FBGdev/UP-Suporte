@@ -1,9 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}Suporte{% endblock %}</title>
+    <link rel="icon" href="{% static 'logo.png' %}" type="image/x-icon" />
+    
+    
 
     <link
       href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
@@ -108,18 +112,18 @@
       <header class="sticky top-0 z-20 border-b border-slate-200/70 bg-white/70 backdrop-blur">
         <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div class="flex items-center gap-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-soft">
-              🛠️
+            <div class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl bg-transparent shadow-soft">
+              <img src="{% static 'logo.png' %}" alt="UpSuporte" class="h-18 w-18" />
             </div>
             <div>
               <p class="font-display text-lg">UpSuporte</p>
-              <p class="text-xs uppercase tracking-[0.3em] text-slate-500">Service Desk</p>
+              <p class="text-xs uppercase tracking-[0.3em] text-slate-500">SOS Service</p>
             </div>
           </div>
           <nav class="hidden items-center gap-4 text-sm font-medium text-slate-600 md:flex">
             <a class="hover:text-slate-900" href="{% url 'home' %}">Dashboard</a>
             <a class="hover:text-slate-900" href="{% url 'minhas_os' %}">Minhas OS</a>
-            <a class="hover:text-slate-900" href="{% url 'logout' %}">Sair</a>
+            <a class="hover:text-slate-900" href="{% url 'login' %}">Sair</a>
           </nav>
         </div>
       </header>
