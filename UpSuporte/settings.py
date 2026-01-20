@@ -143,6 +143,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Auth redirects
+LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/home/'
 LOGOUT_REDIRECT_URL = '/login/'
 
@@ -159,6 +160,12 @@ ENABLE_WHATSAPP_NOTIFICATIONS = os.getenv(
     'False'
 ).lower() in ('1', 'true', 'yes')
 SITE_URL = os.getenv('SITE_URL', 'http://localhost:8000')
+
+SLA_HORAS = {
+    "BAIXA": int(os.getenv("SLA_HORAS_BAIXA", "72")),
+    "MEDIA": int(os.getenv("SLA_HORAS_MEDIA", "48")),
+    "ALTA": int(os.getenv("SLA_HORAS_ALTA", "24")),
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

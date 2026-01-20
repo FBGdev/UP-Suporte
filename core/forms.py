@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from .models import Aparelho, OrdemServico, RegistroManutencao
+from .models import Aparelho, OrdemServico, RegistroManutencao, OrdemServicoComentario
 
 
 class AparelhoForm(forms.ModelForm):
@@ -76,3 +76,12 @@ class CadastroUsuarioForm(forms.ModelForm):
         if cleaned.get("senha") != cleaned.get("confirmar_senha"):
             raise forms.ValidationError("As senhas não coincidem!")
         return cleaned
+
+
+class OrdemServicoComentarioForm(forms.ModelForm):
+    class Meta:
+        model = OrdemServicoComentario
+        fields = ["texto"]
+        widgets = {
+            "texto": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+        }

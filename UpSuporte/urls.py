@@ -7,7 +7,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     # 🔐 Autenticação
-    path('', views.login_view, name='login'),
+    path('login/', views.login_view, name='login'),
     path(
         'logout/',
         auth_views.LogoutView.as_view(next_page='login'),
@@ -18,6 +18,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # 🏠 Dashboard
+    path('', views.home, name='home'),
     path('home/', views.home, name='home'),
 
 
@@ -29,6 +30,7 @@ urlpatterns = [
     path('os/nova/<int:aparelho_id>/', views.nova_os, name='nova_os'),
     path('os/<int:id>/', views.detalhe_os, name='detalhe_os'),
     path('os/<int:id>/decidir/', views.decidir_os, name='decidir_os'),
+    path('os/<int:id>/comentario/', views.adicionar_comentario_os, name='adicionar_comentario_os'),
 
     # 👷 Gestão da OS (gestor)
     path(

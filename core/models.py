@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
+from django.utils import timezone
 
 
 class Funcionario(models.Model):
@@ -64,9 +66,57 @@ class OrdemServico(models.Model):
 
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_conclusao = models.DateTimeField(null=True, blank=True)
+    data_limite_sla = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"OS #{self.id} - {self.aparelho.nome}"
+
+    def get_sla_deadline(self):
+        if self.data_limite_sla:
+            return self.data_limite_sla
+        horas = settings.SLA_HORAS.get(self.prioridade, 48)
+        return self.data_criacao + timezone.timedelta(hours=horas)
+
+    def is_atrasada(self):
+        if self.status in {"CONCLUIDO", "CANCELADO"}:
+            return False
+        return timezone.now() > self.get_sla_deadline()
+
+    def save(self, *args, **kwargs):
+        creating = self.pk is None
+        super().save(*args, **kwargs)
+        if creating and not self.data_limite_sla and self.data_criacao:
+            horas = settings.SLA_HORAS.get(self.prioridade, 48)
+            self.data_limite_sla = self.data_criacao + timezone.timedelta(hours=horas)
+            super().save(update_fields=["data_limite_sla"])
+
+
+class OrdemServicoHistorico(models.Model):
+    ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE, related_name="historico")
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    campo = models.CharField(max_length=100)
+    valor_anterior = models.TextField(blank=True, null=True)
+    valor_novo = models.TextField(blank=True, null=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"OS #{self.ordem_servico.id} - {self.campo}"
+
+    class Meta:
+        ordering = ["-criado_em"]
+
+
+class OrdemServicoComentario(models.Model):
+    ordem_servico = models.ForeignKey(OrdemServico, on_delete=models.CASCADE, related_name="comentarios")
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    texto = models.TextField()
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"OS #{self.ordem_servico.id} - Comentario"
+
+    class Meta:
+        ordering = ["-criado_em"]
 
 
 class RegistroManutencao(models.Model):

@@ -11,6 +11,11 @@
         <span class="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white">
           {{ os.status }}
         </span>
+        {% if os.is_atrasada %}
+        <span class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700">
+          Atrasada
+        </span>
+        {% endif %}
         <span class="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs">
           Prioridade: {{ os.prioridade }}
         </span>
@@ -66,6 +71,10 @@
           <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Criada em</p>
           <p class="mt-2 text-slate-700">{{ os.data_criacao|date:"d/m/Y H:i" }}</p>
         </div>
+        <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+          <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Limite SLA</p>
+          <p class="mt-2 text-slate-700">{{ os.get_sla_deadline|date:"d/m/Y H:i" }}</p>
+        </div>
         {% if os.data_conclusao %}
         <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3">
           <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Concluida em</p>
@@ -92,11 +101,6 @@
       {% if os.funcionario and funcionario and os.funcionario.id == funcionario.id %}
         <a href="{% url 'registrar_manutencao_os' os.id %}" class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-amber-700">
           Registrar manutencao
-        </a>
-      {% endif %}
-      {% if os.funcionario and funcionario and os.funcionario.id == funcionario.id and os.status == "AGENDADO" %}
-        <a href="{% url 'aprovar_os' os.id %}" class="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700">
-          Aceitar ou rejeitar
         </a>
       {% endif %}
     </div>
@@ -150,6 +154,66 @@
       {% else %}
         <div class="rounded-2xl border border-dashed border-slate-200 bg-white/60 px-4 py-6 text-sm text-slate-500">
           Ainda nao ha registros de manutencao nessa OS.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="mt-6 grid gap-6 lg:grid-cols-2">
+  <div class="rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-soft">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-semibold">Historico de mudancas</h3>
+      <span class="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-500">
+        {{ os.historico.count }} registros
+      </span>
+    </div>
+    <div class="mt-4 space-y-3 text-sm">
+      {% if os.historico.all %}
+        {% for h in os.historico.all %}
+        <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+          <div class="flex items-center justify-between text-xs text-slate-500">
+            <span class="font-semibold uppercase tracking-[0.2em] text-slate-500">{{ h.campo }}</span>
+            <span>{{ h.criado_em|date:"d/m/Y H:i" }}</span>
+          </div>
+          <p class="mt-2 text-slate-700">
+            {{ h.valor_anterior|default:"—" }} → {{ h.valor_novo|default:"—" }}
+          </p>
+          <p class="mt-1 text-xs text-slate-500">
+            {% if h.usuario %}{{ h.usuario.username }}{% else %}Sistema{% endif %}
+          </p>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="rounded-2xl border border-dashed border-slate-200 bg-white/60 px-4 py-6 text-sm text-slate-500">
+          Ainda nao ha mudancas registradas.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="rounded-3xl border border-slate-200/70 bg-white/80 p-6 shadow-soft">
+    <h3 class="text-lg font-semibold">Comentarios internos</h3>
+    <form method="post" action="{% url 'adicionar_comentario_os' os.id %}" class="mt-4 space-y-4">
+      {% csrf_token %}
+      {{ comentario_form.texto }}
+      <button type="submit" class="rounded-2xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white">
+        Enviar comentario
+      </button>
+    </form>
+    <div class="mt-4 space-y-3 text-sm">
+      {% if os.comentarios.all %}
+        {% for c in os.comentarios.all %}
+        <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+          <p class="text-slate-700">{{ c.texto }}</p>
+          <div class="mt-2 text-xs text-slate-500">
+            {% if c.usuario %}{{ c.usuario.username }}{% else %}Sistema{% endif %} · {{ c.criado_em|date:"d/m/Y H:i" }}
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="rounded-2xl border border-dashed border-slate-200 bg-white/60 px-4 py-6 text-sm text-slate-500">
+          Nenhum comentario ainda.
         </div>
       {% endif %}
     </div>

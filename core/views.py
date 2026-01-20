@@ -10,10 +10,17 @@ from .decorators import gestor_required
 from .forms import (
     AparelhoForm,
     CadastroUsuarioForm,
+    OrdemServicoComentarioForm,
     OrdemServicoForm,
     RegistroManutencaoForm,
 )
-from .models import Aparelho, Funcionario, OrdemServico, RegistroManutencao
+from .models import (
+    Aparelho,
+    Funcionario,
+    OrdemServico,
+    OrdemServicoHistorico,
+    RegistroManutencao,
+)
 from .notifications import notify_os_assigned
 
 
@@ -23,6 +30,18 @@ def _get_funcionario(user):
         return user.funcionario
     except Funcionario.DoesNotExist:
         return None
+
+
+def _registrar_historico(ordem, usuario, campo, valor_anterior, valor_novo):
+    if valor_anterior == valor_novo:
+        return
+    OrdemServicoHistorico.objects.create(
+        ordem_servico=ordem,
+        usuario=usuario,
+        campo=campo,
+        valor_anterior=str(valor_anterior) if valor_anterior is not None else "",
+        valor_novo=str(valor_novo) if valor_novo is not None else "",
+    )
 
 
 def login_view(request):
@@ -155,6 +174,7 @@ def nova_os(request, aparelho_id):
             os = form.save(commit=False)
             os.aparelho = aparelho
             os.save()
+            _registrar_historico(os, request.user, "status", "", os.status)
             return redirect("home")
     else:
         form = OrdemServicoForm()
@@ -172,11 +192,19 @@ def designar_funcionario(request, os_id):
     funcionarios = Funcionario.objects.all()
 
     if request.method == "POST":
+        funcionario_anterior = ordem.funcionario_id
+        data_anterior = ordem.data_agendada
+        hora_anterior = ordem.hora_agendada
+        status_anterior = ordem.status
         ordem.funcionario_id = request.POST.get("funcionario")
         ordem.data_agendada = request.POST.get("data_agendada")
         ordem.hora_agendada = request.POST.get("hora_agendada")
         ordem.status = "AGENDADO"
         ordem.save()
+        _registrar_historico(ordem, request.user, "funcionario", funcionario_anterior, ordem.funcionario_id)
+        _registrar_historico(ordem, request.user, "data_agendada", data_anterior, ordem.data_agendada)
+        _registrar_historico(ordem, request.user, "hora_agendada", hora_anterior, ordem.hora_agendada)
+        _registrar_historico(ordem, request.user, "status", status_anterior, ordem.status)
         if ordem.funcionario:
             notify_os_assigned(ordem)
         return redirect("home")
@@ -191,10 +219,16 @@ def detalhe_os(request, id):
     os_obj = get_object_or_404(OrdemServico, id=id)
     is_gestor = request.user.groups.filter(name="Gestor").exists()
     funcionario = _get_funcionario(request.user)
+    comentario_form = OrdemServicoComentarioForm()
     return render(
         request,
         "detalhe_os.html",
-        {"os": os_obj, "is_gestor": is_gestor, "funcionario": funcionario},
+        {
+            "os": os_obj,
+            "is_gestor": is_gestor,
+            "funcionario": funcionario,
+            "comentario_form": comentario_form,
+        },
     )
 
 
@@ -208,12 +242,14 @@ def decidir_os(request, id):
         return redirect("home")
 
     if request.method == "POST":
+        status_anterior = os_obj.status
         acao = request.POST.get("acao")
         if acao == "aceitar":
             os_obj.status = "ACEITA"
         elif acao == "rejeitar":
             os_obj.status = "REJEITADA"
         os_obj.save()
+        _registrar_historico(os_obj, request.user, "status", status_anterior, os_obj.status)
         return redirect("home")
 
     return redirect("home")
@@ -224,6 +260,7 @@ def registrar_manutencao_os(request, os_id):
     funcionario = ordem.funcionario
 
     if request.method == "POST":
+        status_anterior = ordem.status
         form = RegistroManutencaoForm(request.POST, request.FILES)
         if form.is_valid():
             manut = form.save(commit=False)
@@ -233,6 +270,7 @@ def registrar_manutencao_os(request, os_id):
 
             ordem.status = "EM_ANDAMENTO"
             ordem.save()
+            _registrar_historico(ordem, request.user, "status", status_anterior, ordem.status)
 
             return redirect("detalhe_os", id=ordem.id)
     else:
@@ -250,6 +288,7 @@ def finalizar_os(request, id):
     os = get_object_or_404(OrdemServico, id=id)
 
     if request.method == "POST":
+        status_anterior = os.status
         laudo = request.POST.get("laudo", "").strip()
 
         if not laudo:
@@ -263,6 +302,7 @@ def finalizar_os(request, id):
         os.status = "CONCLUIDO"
         os.data_conclusao = timezone.now()
         os.save()
+        _registrar_historico(os, request.user, "status", status_anterior, os.status)
 
         return redirect("detalhe_os", id=os.id)
 
@@ -288,6 +328,21 @@ def cadastrar_usuario(request):
         form = CadastroUsuarioForm()
 
     return render(request, "cadastro.html", {"form": form})
+
+
+@login_required
+def adicionar_comentario_os(request, id):
+    os_obj = get_object_or_404(OrdemServico, id=id)
+    if request.method != "POST":
+        return redirect("detalhe_os", id=os_obj.id)
+
+    form = OrdemServicoComentarioForm(request.POST)
+    if form.is_valid():
+        comentario = form.save(commit=False)
+        comentario.ordem_servico = os_obj
+        comentario.usuario = request.user
+        comentario.save()
+    return redirect("detalhe_os", id=os_obj.id)
 
 
 @login_required
