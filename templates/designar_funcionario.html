@@ -63,7 +63,7 @@
   form.addEventListener("submit", () => {
     overlay.classList.remove("hidden");
     overlay.classList.add("flex");
-    form.querySelectorAll("button, a, input, select").forEach((el) => {
+    form.querySelectorAll("button[type='submit'], a").forEach((el) => {
       el.setAttribute("disabled", "disabled");
       el.classList.add("pointer-events-none", "opacity-70");
     });
