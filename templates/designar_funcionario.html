@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Designar Funcionário{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h4 class="card-title mb-3">👨‍🔧 Designar Técnico</h4>
+        <p class="text-muted mb-3">
+          OS #{{ ordem.id }} — Aparelho: <strong>{{ ordem.aparelho.nome }}</strong>
+        </p>
+
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label class="form-label">Funcionário</label>
+            <select name="funcionario" class="form-select" required>
+              <option value="">Selecione...</option>
+              {% for f in funcionarios %}
+              <option value="{{ f.id }}">
+                {{ f }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Data agendada</label>
+            <input type="date" name="data_agendada" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Hora agendada</label>
+            <input type="time" name="hora_agendada" class="form-control">
+          </div>
+
+          <div class="d-flex gap-2 justify-content-end">
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary">↩️ Voltar</a>
+            <button type="submit" class="btn btn-primary">💾 Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

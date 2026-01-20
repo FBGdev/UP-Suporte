@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Finalizar OS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        <h4 class="card-title mb-2">✅ Finalizar Ordem de Serviço</h4>
+        <p class="text-muted mb-4">
+          OS #{{ os.id }} — Aparelho: <strong>{{ os.aparelho.nome }}</strong>
+        </p>
+
+        {% if erro %}
+          <div class="alert alert-danger">{{ erro }}</div>
+        {% endif %}
+
+        <div class="alert alert-warning">
+          <strong>Atenção:</strong> ao finalizar, a OS será marcada como concluída e não deve mais receber manutenções.
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="mb-3">
+            <label for="laudo" class="form-label">
+              Laudo técnico <span class="text-danger">*</span>
+            </label>
+            <textarea
+              class="form-control"
+              id="laudo"
+              name="laudo"
+              rows="6"
+              placeholder="Descreva o diagnóstico, o que foi feito, peças trocadas e orientações ao cliente..."
+              required
+            >{% if request.POST.laudo %}{{ request.POST.laudo }}{% endif %}</textarea>
+          </div>
+
+          <div class="d-flex gap-2 justify-content-end">
+            <a href="{% url 'detalhe_os' os.id %}" class="btn btn-outline-secondary">
+              ↩️ Voltar
+            </a>
+            <button type="submit" class="btn btn-success">
+              ✅ Finalizar OS
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

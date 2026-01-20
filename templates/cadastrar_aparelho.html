@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Cadastrar Aparelho{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h4 class="mb-3">
+      {% if editando %}
+        ✏️ Editar Aparelho
+      {% else %}
+        ➕ Novo Aparelho
+      {% endif %}
+    </h4>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <button class="btn btn-success w-100">
+        💾 {% if editando %}Atualizar{% else %}Salvar{% endif %}
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block content %}
+
+<h2>➕ Nova Ordem de Serviço</h2>
+
+<p>Aparelho: <strong>{{ aparelho.nome }}</strong></p>
+
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Salvar OS</button>
+</form>
+
+<a href="{% url 'home' %}">⬅ Voltar</a>
+
+{% endblock %}

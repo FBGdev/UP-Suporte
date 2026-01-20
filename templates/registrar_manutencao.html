@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Registrar Manutenção{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        <h4 class="card-title mb-3">🛠️ Registrar Manutenção</h4>
+
+        <p class="text-muted mb-3">
+          OS #{{ ordem.id }} — Aparelho: <strong>{{ ordem.aparelho.nome }}</strong>
+        </p>
+
+        <form method="post">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+
+          <div class="mb-3">
+            <label class="form-label">Técnico responsável</label>
+            <input
+              type="text"
+              class="form-control"
+              value="{{ funcionario }}"
+              disabled
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">
+              Tipo de serviço <span class="text-danger">*</span>
+            </label>
+            {{ form.tipo_servico }}
+            {{ form.tipo_servico.errors }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">
+              Descrição da manutenção <span class="text-danger">*</span>
+            </label>
+            {{ form.descricao }}
+            {{ form.descricao.errors }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Peça trocada</label>
+            {{ form.peca_trocada }}
+            {{ form.peca_trocada.errors }}
+          </div>
+
+          <div class="d-flex gap-2 justify-content-end">
+            <a
+              href="{% url 'detalhe_os' ordem.id %}"
+              class="btn btn-outline-secondary"
+            >
+              ↩️ Voltar
+            </a>
+
+            <button type="submit" class="btn btn-warning">
+              💾 Salvar manutenção
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

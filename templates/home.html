@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📊 Dashboard - Suporte Técnico</h2>
+
+<div class="row g-4">
+
+  {% if is_gestor %}
+  <!-- APARELHOS -->
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h5 class="card-title">📦 Aparelhos</h5>
+
+        <ul class="list-group list-group-flush">
+          {% for a in aparelhos %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ a.nome }}</strong><br>
+              <small class="text-muted">{{ a.marca }} - {{ a.modelo }}</small>
+            </div>
+
+            <div class="btn-group">
+              <a href="{% url 'nova_os' a.id %}" class="btn btn-sm btn-outline-success">
+                ➕ OS
+              </a>
+
+              <a href="{% url 'editar_aparelho' a.id %}" class="btn btn-sm btn-outline-primary">
+                ✏️
+              </a>
+            </div>
+          </li>
+          {% empty %}
+          <li class="list-group-item text-muted">Nenhum aparelho cadastrado.</li>
+          {% endfor %}
+        </ul>
+
+        <a href="{% url 'novo_aparelho' %}" class="btn btn-primary w-100 mt-3">
+          + Novo Aparelho
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ORDENS DE SERVIÇO -->
+  <div class="{% if is_gestor %}col-md-6{% else %}col-12{% endif %}">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h5 class="card-title">🧾 Ordens de Serviço</h5>
+
+        <ul class="list-group list-group-flush">
+          {% for os in ordens %}
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between">
+              <div>
+                <strong>OS #{{ os.id }}</strong><br>
+                <small class="text-muted">
+                  {{ os.aparelho.nome }} — {{ os.aparelho.marca }} {{ os.aparelho.modelo }}
+                  — {{ os.aparelho.cliente }}
+                  <span class="badge bg-secondary ms-1">{{ os.status }}</span>
+                </small>
+              </div>
+
+              <div class="btn-group">
+                <a href="{% url 'detalhe_os' os.id %}" class="btn btn-sm btn-outline-secondary">
+                  👁️
+                </a>
+
+                {% if funcionario and os.funcionario_id == funcionario.id %}
+                <a href="{% url 'registrar_manutencao_os' os.id %}" class="btn btn-sm btn-outline-warning">
+                  🛠️
+                </a>
+                {% endif %}
+
+                {% if is_gestor and os.status != "CONCLUIDO" %}
+                <a href="{% url 'designar_funcionario' os.id %}" class="btn btn-sm btn-outline-primary">
+                  👨‍🔧
+                </a>
+                {% endif %}
+
+                {% if is_gestor and os.status == "EM_ANDAMENTO" %}
+                <a href="{% url 'finalizar_os' os.id %}" class="btn btn-sm btn-outline-danger">
+                  ✅
+                </a>
+                {% endif %}
+              </div>
+            </div>
+          </li>
+          {% empty %}
+          <li class="list-group-item text-muted">Nenhuma OS criada.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

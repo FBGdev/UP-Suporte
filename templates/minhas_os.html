@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Minhas OS{% endblock %}
+
+{% block content %}
+<h4 class="mb-3">📋 Minhas Ordens de Serviço</h4>
+
+{% if not funcionario %}
+  <div class="alert alert-warning">
+    Seu usuário não está associado a um funcionário.
+  </div>
+{% endif %}
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <ul class="list-group list-group-flush">
+      {% for os in ordens %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <strong>OS #{{ os.id }}</strong><br>
+          <small class="text-muted">{{ os.aparelho.nome }} — {{ os.status }}</small>
+        </div>
+        <a class="btn btn-sm btn-outline-secondary" href="{% url 'detalhe_os' os.id %}">
+          👁️ Detalhes
+        </a>
+      </li>
+      {% empty %}
+      <li class="list-group-item text-muted">Nenhuma OS atribuída.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
