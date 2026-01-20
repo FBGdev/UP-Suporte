@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from .decorators import gestor_required
 from .forms import (
@@ -12,6 +13,7 @@ from .forms import (
     RegistroManutencaoForm,
 )
 from .models import Aparelho, Funcionario, OrdemServico, RegistroManutencao
+from .notifications import notify_os_assigned
 
 
 
@@ -126,6 +128,7 @@ def nova_os(request, aparelho_id):
     })
 
 
+@ensure_csrf_cookie
 @gestor_required
 def designar_funcionario(request, os_id):
     ordem = get_object_or_404(OrdemServico, id=os_id)
@@ -137,6 +140,8 @@ def designar_funcionario(request, os_id):
         ordem.hora_agendada = request.POST.get("hora_agendada")
         ordem.status = "AGENDADO"
         ordem.save()
+        if ordem.funcionario:
+            notify_os_assigned(ordem)
         return redirect("home")
 
     return render(request, "designar_funcionario.html", {
