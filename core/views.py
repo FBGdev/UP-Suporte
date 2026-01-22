@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-from .decorators import gestor_required
+from .decorators import gestor_required, is_gestor as is_gestor_user
 from .forms import (
     AparelhoForm,
     CadastroUsuarioForm,
@@ -51,7 +51,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             is_tecnico = user.groups.filter(name="Tecnico").exists()
-            is_gestor = user.groups.filter(name="Gestor").exists()
+            is_gestor = is_gestor_user(user)
 
             if not (is_tecnico or is_gestor):
                 form.add_error(None, "Acesso permitido apenas para técnicos ou gestores.")
@@ -65,7 +65,7 @@ def login_view(request):
 @login_required
 def home(request):
     funcionario = _get_funcionario(request.user)
-    is_gestor = request.user.groups.filter(name="Gestor").exists()
+    is_gestor = is_gestor_user(request.user)
     is_tecnico = request.user.groups.filter(name="Tecnico").exists()
 
     if is_tecnico and funcionario:
@@ -217,7 +217,7 @@ def designar_funcionario(request, os_id):
 @login_required
 def detalhe_os(request, id):
     os_obj = get_object_or_404(OrdemServico, id=id)
-    is_gestor = request.user.groups.filter(name="Gestor").exists()
+    is_gestor = is_gestor_user(request.user)
     funcionario = _get_funcionario(request.user)
     comentario_form = OrdemServicoComentarioForm()
     return render(
