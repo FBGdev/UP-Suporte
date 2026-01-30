@@ -44,6 +44,59 @@ def _registrar_historico(ordem, usuario, campo, valor_anterior, valor_novo):
     )
 
 
+def _render_error(request, status_code, title, message):
+    is_gestor = False
+    if request.user.is_authenticated:
+        is_gestor = is_gestor_user(request.user)
+    return render(
+        request,
+        "error.html",
+        {
+            "status_code": status_code,
+            "title": title,
+            "message": message,
+            "is_gestor": is_gestor,
+        },
+        status=status_code,
+    )
+
+
+def custom_404(request, exception):
+    return _render_error(
+        request,
+        404,
+        "Página não encontrada",
+        "O endereço pode estar incorreto ou a página foi movida.",
+    )
+
+
+def custom_403(request, exception):
+    return _render_error(
+        request,
+        403,
+        "Acesso negado",
+        "Você não tem permissão para acessar este conteúdo.",
+    )
+
+
+def custom_400(request, exception):
+    return _render_error(
+        request,
+        400,
+        "Requisição inválida",
+        "Não foi possível processar esta requisição.",
+    )
+
+
+def custom_500(request):
+    return _render_error(
+        request,
+        500,
+        "Erro interno",
+        "Algo deu errado por aqui. Tente novamente em alguns instantes.",
+    )
+
+
 def login_view(request):
     form = AuthenticationForm(request, data=request.POST or None)
 

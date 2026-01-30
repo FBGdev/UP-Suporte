@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Erro {{ status_code }}{% endblock %}
+
+{% block header %}
+<header class="border-b border-slate-200/70 bg-white/70 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <div>
+      <p class="font-display text-lg">UpSuporte</p>
+      <p class="text-xs uppercase tracking-[0.3em] text-slate-500">SOS</p>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-2xl text-center">
+  <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Erro {{ status_code }}</p>
+  <h1 class="mt-3 text-3xl font-semibold text-slate-900 md:text-4xl">
+    {{ title }}
+  </h1>
+  <p class="mt-4 text-base text-slate-600">
+    {{ message }}
+  </p>
+  {% if is_gestor %}
+  <p class="mt-2 text-sm text-slate-500">
+    Se precisar, valide o endereço acessado, permissões do usuário e o status do serviço.
+  </p>
+  {% endif %}
+  <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+    
+    <button
+      type="button"
+      onclick="history.back()"
+      class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-900"
+    >
+      Voltar
+    </button>
+    
+  </div>
+</section>
+{% endblock %}
